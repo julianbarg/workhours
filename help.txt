@@ -1,0 +1,40 @@
+The idea:
+	Define a command that adds the timestamp for starting a task, and 
+	one for stopping. Assumes that the repository is saved to the Documents 
+	folder.
+
+
+
+Common command line commands:
+
+-touch file.txt: create text file file.txt.
+-man: help function.
+-echo "foo" >> file.txt
+	Appends foo to the file file.txt.
+
+
+
+Custom functions:
+
+-start_job: Save timestamp of starting work on project.
+	Defined as:
+	```
+	function start_job () {
+echo "${1},1,$(date -Iminutes)" >> ~/Documents/workhours/timestamps.csv
+	}
+
+-start_job: Save timestamp of starting work on project.
+	Defined as:
+	```
+	function end_job () {
+echo "${1},0,$(date -Iminutes)" >> ~/Documents/workhours/timestamps.csv
+	}
+
+-pretty_csv file.csv: Pretty prints file.csv.
+	Defined as:
+	```
+	function pretty_csv {
+column -t -s, -n "$@" | less -F -S -X -K
+	}
+	```
+	Source: https://www.stefaanlippens.net/pretty-csv.html
