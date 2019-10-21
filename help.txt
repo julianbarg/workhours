@@ -26,7 +26,7 @@ tail -1 ~/workhours/timestamps.csv
 	}
 	```
 
--start_job: Save timestamp of starting work on project.
+-end_job: Save timestamp of starting work on project.
 	Defined as:
 	```
 	function end_job () {
@@ -34,6 +34,14 @@ job="$(tail -1 ~/workhours/timestamps.csv | grep -o -P '^[^,]*')"
 echo "$job,0,$(date -Iminutes)" >> ~/workhours/timestamps.csv
 tail -2 ~/workhours/timestamps.csv
 	}
+	```
+
+-check_job: Check status of current job.
+	Defined as:
+	```
+		function check_job {
+tail -1 ~/workhours/timestamps.csv
+}
 	```
 
 -pretty_csv file.csv: Pretty prints file.csv.
