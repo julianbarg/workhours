@@ -12,7 +12,8 @@ julianbarg/workhours_dashboard) is dedicated to visualizing the workhours.
 
 The terminal functions allow to easily record the start or end of working
 on a project. Note that the locations for the log file are hardcoded, 
-because I am a lazy bastard.
+because I am a lazy bastard. The functions are saved to `~/.bashrc` to
+make them permanently available in the console.
 
 ### start_job (job_name)
 
@@ -27,8 +28,8 @@ function start_job () {
 
 ### end_job
 
-Ends the last job. the function looks up the name of the last job to make sure 
-that records are consistent.
+Ends the last job. the function looks up the name of the last job to make 
+sure that records are consistent.
 
 ```bash
 function end_job () {
@@ -40,12 +41,44 @@ function end_job () {
 
 ### check_job
 
-Check whether you have successfully recorded ending the last project, or 
-see what job you are supposedly working on.
+Check whether you have successfully recorded ending the last project, or see 
+what job you are supposedly working on.
 
-```
+```bash
 function check_job {
 	tail -1 ~/workhours/timestamps.csv
 }
 ```
 
+### pretty_csv
+
+Helper function to print `timestamps.csv` to the console in a readable 
+format.
+Source: https://www.stefaanlippens.net/pretty-csv.html 
+
+```bash
+function pretty_csv {
+	column -t -s, -n "$@" | less -F -S -X -K
+}
+```
+
+## Bash script `sync_workhours.sh`
+
+The bash script needs to have the appropriate file permissions to be 
+executable. For instance, navigate to the project folder in the terminal
+and run `sudo chmod 755 sync_workhours.sh`. To run, the repository should 
+be setup to use ssh rather than e.g., the github url for pull and push (
+otherwise, when pushing, the crontab will be prompted to enter the password
+and fail). See https://help.github.com/en/github/authenticating-to-github/connecting-to-github-with-ssh 
+on how to set this up. In the current setup, the bash script uses keychain to 
+ensure that it can use the ssh key. keychain can be installed via apt-get, and 
+needs to be run in the terminal once (`keychain`) to be set up. The bash script 
+also needs to be added to crontab to run periodically. Further, run `sudo chmod -R
+ a+rwX .` in the folder to ensure that crontab can use `git commit`. 
+ Finally, add the bashcript to crontab (`crontab -e`), e.g., by adding these 
+ lines at the bottom:
+ ```cron
+ MAILTO=""
+ 0 * * * * /home/usr/workhours/sync_workhours.sh >> /home/use/workhours/sync_workhours.log 2>&1
+ ```
+ (Substitute usr with your user name.)
